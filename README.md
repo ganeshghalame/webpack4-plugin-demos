@@ -19,3 +19,18 @@ index.html
   </body>
 </html>
 ```
+
+## Demo02: Webpack simple config using `webpack.config.js`
+Same demo01 example with below `webpack.config.js` produce the same build
+```javascript
+var path = require('path');
+
+module.exports = {
+  mode: 'development',
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'main.js'
+  }
+};
+```
