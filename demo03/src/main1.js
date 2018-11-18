@@ -1,0 +1,1 @@
+document.write('<h1>In main1 entry point</h1>');
