@@ -1,0 +1,1 @@
+document.write('<h1>Hello World, Basic Program with Zero config, without webpack.config.js</h1>');
