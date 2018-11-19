@@ -133,14 +133,6 @@ Loaders are preprocessors which transform a resource file of your app ([more inf
 
 For example, [Babel-loader](https://www.npmjs.com/package/babel-loader) can transform JSX/ES6 file into normal JS files，after which Webpack will begin to build these JS files. Webpack's official doc has a complete list of [loaders](http://webpack.github.io/docs/list-of-loaders.html).
 
-`.babelrc` file for preset config as below:
-
-```javascript
-{
-  "presets": ["@babel/preset-env", "@babel/preset-react"]
-}
-```
-
 `main.jsx` is a JSX file.
 
 ```javascript
@@ -163,7 +155,7 @@ index.html
   </head>
   <body>
     <div id="wrapper"></div>
-    <script src="bundle.js"></script>
+    <script src="dist/bundle.js"></script>
   </body>
 </html>
 ```
@@ -180,14 +172,15 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
+        exclude: /(node_modules)/,
         use: {
-          loader: 'babel-loader'
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react']
+          }
         }
       }
     ]
   }
 };
 ```
-
-The above snippet uses `babel-loader` which needs Babel's preset plugins [babel-preset-es2015](https://www.npmjs.com/package/babel-preset-es2015) and [babel-preset-react](https://www.npmjs.com/package/babel-preset-react) to transpile ES6 and React.
