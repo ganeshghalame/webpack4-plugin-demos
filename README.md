@@ -62,8 +62,8 @@ webpack.config.js
 ```javascript
 module.exports = {
   entry: {
-    bundle1: './main1.js',
-    bundle2: './main2.js'
+    bundle1: './src/main1.js',
+    bundle2: './src/main2.js'
   },
   output: {
     filename: '[name].js'
