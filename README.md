@@ -10,9 +10,7 @@ Default entry file for webpack 4 is `index.js`, so created basic file with just 
 
 ```javascript
 // index.js
-document.write(
-  '<h1>Hello World, Basic Program with Zero config, without webpack.config.js</h1>'
-);
+document.write('<h1>Hello World, Basic Program with Zero config, without webpack.config.js</h1>');
 ```
 
 Creating `index.html` just to load bundle file.
@@ -35,9 +33,7 @@ Default `entry` file `index.js`
 
 ```javascript
 // index.js
-document.write(
-  '<h1>Hello World, Basic Program with simple webpack.config.js</h1>'
-);
+document.write('<h1>Hello World, Basic Program with simple webpack.config.js</h1>');
 ```
 
 ```html
@@ -183,4 +179,73 @@ module.exports = {
     ]
   }
 };
+```
+
+## Demo04: CSS-loader
+
+Webpack allows you to include CSS in JS file, then preprocessed CSS file with [CSS-loader](https://github.com/webpack-contrib/css-loader).
+
+Install loaders using command `npm install css-loader style-loader --save-dev`
+
+The `css-loader` interprets `@import` and `url()` like `import/require()` and will resolve them.
+
+index.js
+
+```javascript
+require('./src/app.css');  // Just importing it so that it will add be used by dependency graph
+```
+
+app.css
+
+```css
+body {
+  background-color: yellow;
+}
+```
+
+index.html
+
+```html
+<html>
+  <head>
+    <script type="text/javascript" src="./dist/bundle.js"></script>
+  </head>
+  <body>
+    <h1>Hello World, Background color set using CSS</h1>
+  </body>
+</html>
+```
+
+webpack.config.js
+
+```javascript
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      }
+    ]
+  }
+};
+```
+
+Attention, you have to use two loaders to transform CSS file. First is [CSS-loader](https://www.npmjs.com/package/css-loader) to read CSS file, and another one is [Style-loader](https://www.npmjs.com/package/style-loader) to insert `<style>` tag into HTML page.
+
+Actually, Webpack inserts an internal style sheet into `index.html`.
+
+```html
+<head>
+  <script type="text/javascript" src="bundle.js"></script>
+  <style type="text/css">
+    body {
+      background-color: blue;
+    }
+  </style>
+</head>
 ```
