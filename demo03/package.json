@@ -1,7 +1,7 @@
 {
-  "name": "demo01",
+  "name": "demo03",
   "version": "1.0.0",
-  "description": "Same config example with webpack.config.js",
+  "description": "Demo03 Multiple entry point for multi page application",
   "main": "index.js",
   "scripts": {
     "dev": "webpack -d",

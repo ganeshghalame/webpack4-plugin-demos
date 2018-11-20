@@ -1,7 +1,7 @@
 {
-  "name": "demo01",
+  "name": "demo04",
   "version": "1.0.0",
-  "description": "Same config example with webpack.config.js",
+  "description": "Babel-loader for react",
   "main": "index.js",
   "scripts": {
     "dev": "webpack -d",

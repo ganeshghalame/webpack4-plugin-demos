@@ -244,8 +244,71 @@ Actually, Webpack inserts an internal style sheet into `index.html`.
   <script type="text/javascript" src="bundle.js"></script>
   <style type="text/css">
     body {
-      background-color: blue;
+      background-color: yellow;
     }
   </style>
 </head>
+```
+
+## Demo05: Image loader 
+ 
+Install `url-loader` using command `npm i url-loader file-loader --save-dev`
+
+Webpack could also include images in JS files.
+
+index.js
+
+```javascript
+var img1 = document.createElement("img");
+img1.src = require("../images/small.png");
+document.body.appendChild(img1);
+
+var img2 = document.createElement("img");
+img2.src = require("../images/big.png");
+document.body.appendChild(img2);
+```
+
+index.html
+
+```html
+<html>
+  <body>
+    <script type="text/javascript" src="bundle.js"></script>
+  </body>
+</html>
+```
+
+webpack.config.js
+
+```javascript
+module.exports = {
+  entry: './main.js',
+  output: {
+    filename: 'bundle.js'
+  },
+  module: {
+    rules:[
+      {
+        test: /\.(png|jpg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192
+            }
+          }
+        ]
+      }
+    ]
+  }
+};
+```
+
+[url-loader](https://www.npmjs.com/package/url-loader) transforms image files into `<img>` tag. If the image size is smaller than 8192 bytes, it will be transformed into Data URL; otherwise, it will be transformed into normal URL.
+
+After launching the server, `small.png` and `big.png` have the following URLs.
+
+```html
+<img src="data:image/png;base64,iVBOR...uQmCC">
+<img src="4853ca667a2b8b8844eb2693ac1b2578.png">
 ```
