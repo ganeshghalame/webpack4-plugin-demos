@@ -181,7 +181,7 @@ module.exports = {
 };
 ```
 
-## Demo04: CSS-loader
+## Demo05: CSS-loader
 
 Webpack allows you to include CSS in JS file, then preprocessed CSS file with [CSS-loader](https://github.com/webpack-contrib/css-loader).
 
@@ -317,10 +317,20 @@ new HtmlWebPackPlugin({
             filename: "./index.html"
         }),
 ```
+**NOTE: **
+```javascript
+"sideEffects": false       //Add this in package.json
+```
+To prevent tree shaking for css import add below in package.json
+```javascript
+"sideEffects": [
+    "*.css"
+]
+```
 
 ## Demo07: Image loader
 
-Install `file-loader` using command `npm i url-loader html-webpack-plugin --save-dev`
+Install `url-loader` using command `npm i url-loader html-webpack-plugin --save-dev`
 
 Webpack could also include images in JS files.
 
@@ -328,11 +338,11 @@ index.js
 
 ```javascript
 var img1 = document.createElement('img');
-img1.src = require('../images/small.png');
+img1.src = require('./small.png');
 document.body.appendChild(img1);
 
 var img2 = document.createElement('img');
-img2.src = require('../images/big.png');
+img2.src = require('./big.png');
 document.body.appendChild(img2);
 ```
 
@@ -340,6 +350,7 @@ webpack.config.js
 
 ```javascript
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+
 module.exports = {
   output: {
     filename: 'bundle.js'
@@ -348,12 +359,11 @@ module.exports = {
     rules: [
       {
         test: /\.(png|jpg)$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[hash].[ext]'
+        use: [
+          {
+            loader: 'url-loader'
           }
-        }
+        ]
       }
     ]
   },
@@ -367,9 +377,9 @@ module.exports = {
 After launching the server, `small.png` and `big.png` have the following URLs.
 
 ```html
-<img src="data:image/png;base64,iVBO.." /> 
-<img src="data:image/png;base64,iaas.." />
+<img src="data:image/png;base64,iVBO.." /> <img src="data:image/png;base64,iaas.." />
 ```
+
 **Add Option for image size in `url-loader` options**
 If the image size is smaller than 8192 bytes then , it will be transformed into Data URL; otherwise, it will be transformed into normal URL.
 Now change the config for loader to use below:
@@ -382,28 +392,77 @@ Now change the config for loader to use below:
   }
 }
 ```
-So to load the image `size > limit (8192 bytes) use `file-loader` i.e install dependency using `npm -i D file-loader`
+
+So to load the image `size > limit (8192 bytes) use`file-loader`i.e install dependency using`npm -i D file-loader`
 
 webpack.config.js
+
+```javascript
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+module.exports = {
+  output: {
+    filename: 'bundle.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(png|jpg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192
+            }
+          }
+        ]
+      }
+    ]
+  },
+  plugins: [new HtmlWebPackPlugin()]
+};
+```
+
+## Demo08: Tree shaking
+
+math.js
+
+```javascript
+export function square(x) {
+    console.log('Returning square');
+    return x * x;
+}
+
+export function cube(x) {
+    console.log('Returning cube');
+    return x * x * x;
+}
+```
+index.js
+```javascript
+import { cube } from './math.js';   //Note we just
+
+function component() {
+    var element = document.createElement('pre');
+    element.innerHTML = [
+        'Hello webpack!',
+        '5 cubed is equal to ' + cube(5)
+    ].join('\n\n');
+    return element;
+}
+document.body.appendChild(component());
+
+```
+
 ```javascript
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 module.exports = {
     output: {
         filename: 'bundle.js'
     },
-    module: {
-        rules: [{
-            test: /\.(png|jpg)$/,
-            use: [{
-                loader: 'url-loader',
-                options: {
-                    limit: 8192
-                }
-            }]
-        }]
+    optimization: {
+        usedExports: true      // This will show unused exports in bundle
     },
     plugins: [new HtmlWebPackPlugin()]
 };
 
 ```
-
