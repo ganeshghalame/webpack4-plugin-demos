@@ -249,6 +249,65 @@ Actually, Webpack inserts an internal style sheet into `index.html`.
   </style>
 </head>
 ```
+## Demo 06: CSS Extract and HTML plugin
+Install `npm i css-loader mini-css-extract-plugin html-webpack-plugin --save-dev`
+
+main.css 
+```css
+body {
+    background-color: gray;
+}
+```
+
+index.js 
+```javascript
+import style from "./main.css"; // Just importing file
+document.write('<h1>Hello World, Index file generated using HtmlWebPackPlugin and CSS is extracted in to separate file using MiniCssExtractPlugin </h1>');
+```
+
+webpack.config.js
+```javascript
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+module.exports = {
+    entry: './src/index.js',
+    output: {
+        filename: 'bundle.js'
+    },
+    module: {
+        rules: [{
+            test: /\.css$/,
+            use: [MiniCssExtractPlugin.loader, "css-loader"]
+        }]
+    },
+    plugins: [
+        new HtmlWebPackPlugin(), // Show with template
+        new MiniCssExtractPlugin({
+            filename: "[name].css",
+            chunkFilename: "[id].css"
+          })
+    ]
+};
+```
+```html
+<html>
+  <head>
+    <title>Demo07 Webpack example CSS Extract and HTML Plugin</title>
+  </head>
+  <body>
+    <h1>I am in template file</h1>
+  </body>
+</html>
+
+```
+
+```javascript
+// Update below code to use template file
+new HtmlWebPackPlugin({
+            template: "./src/template.html",
+            filename: "./index.html"
+        }),
+```
 
 ## Demo05: Image loader 
  

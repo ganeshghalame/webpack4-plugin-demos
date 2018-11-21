@@ -1,7 +1,2 @@
-var img1 = document.createElement("img");
-img1.src = require("../images/small.png");
-document.body.appendChild(img1);
-
-var img2 = document.createElement("img");
-img2.src = require("../images/big.png");
-document.body.appendChild(img2);
+import style from "./main.css";
+document.write('<h1>Hello World, Index file generated using HtmlWebPackPlugin and CSS is extracted in to separate file using MiniCssExtractPlugin </h1>');
