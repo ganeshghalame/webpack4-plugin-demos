@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack -d",
-    "prod": "webpack -p"
+    "prod": "webpack -p",
+    "analyze": "webpack --json >> stats.json"
   },
   "keywords": [],
   "author": "",
