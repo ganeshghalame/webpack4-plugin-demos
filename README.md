@@ -192,7 +192,7 @@ The `css-loader` interprets `@import` and `url()` like `import/require()` and wi
 index.js
 
 ```javascript
-require('./src/app.css');  // Just importing it so that it will add be used by dependency graph
+require('./src/app.css'); // Just importing it so that it will add be used by dependency graph
 ```
 
 app.css
@@ -249,46 +249,56 @@ Actually, Webpack inserts an internal style sheet into `index.html`.
   </style>
 </head>
 ```
+
 ## Demo 06: CSS Extract and HTML plugin
+
 Install `npm i css-loader mini-css-extract-plugin html-webpack-plugin --save-dev`
 
-main.css 
+main.css
+
 ```css
 body {
-    background-color: gray;
+  background-color: gray;
 }
 ```
 
-index.js 
+index.js
+
 ```javascript
-import style from "./main.css"; // Just importing file
-document.write('<h1>Hello World, Index file generated using HtmlWebPackPlugin and CSS is extracted in to separate file using MiniCssExtractPlugin </h1>');
+import style from './main.css'; // Just importing file
+document.write(
+  '<h1>Hello World, Index file generated using HtmlWebPackPlugin and CSS is extracted in to separate file using MiniCssExtractPlugin </h1>'
+);
 ```
 
 webpack.config.js
+
 ```javascript
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
-    entry: './src/index.js',
-    output: {
-        filename: 'bundle.js'
-    },
-    module: {
-        rules: [{
-            test: /\.css$/,
-            use: [MiniCssExtractPlugin.loader, "css-loader"]
-        }]
-    },
-    plugins: [
-        new HtmlWebPackPlugin(), // Show with template
-        new MiniCssExtractPlugin({
-            filename: "[name].css",
-            chunkFilename: "[id].css"
-          })
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+      }
     ]
+  },
+  plugins: [
+    new HtmlWebPackPlugin(), // Show with template
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css'
+    })
+  ]
 };
 ```
+
 ```html
 <html>
   <head>
@@ -298,7 +308,6 @@ module.exports = {
     <h1>I am in template file</h1>
   </body>
 </html>
-
 ```
 
 ```javascript
@@ -309,65 +318,92 @@ new HtmlWebPackPlugin({
         }),
 ```
 
-## Demo05: Image loader 
- 
-Install `url-loader` using command `npm i url-loader file-loader --save-dev`
+## Demo07: Image loader
+
+Install `file-loader` using command `npm i url-loader html-webpack-plugin --save-dev`
 
 Webpack could also include images in JS files.
 
 index.js
 
 ```javascript
-var img1 = document.createElement("img");
-img1.src = require("../images/small.png");
+var img1 = document.createElement('img');
+img1.src = require('../images/small.png');
 document.body.appendChild(img1);
 
-var img2 = document.createElement("img");
-img2.src = require("../images/big.png");
+var img2 = document.createElement('img');
+img2.src = require('../images/big.png');
 document.body.appendChild(img2);
-```
-
-index.html
-
-```html
-<html>
-  <body>
-    <script type="text/javascript" src="bundle.js"></script>
-  </body>
-</html>
 ```
 
 webpack.config.js
 
 ```javascript
+const HtmlWebPackPlugin = require('html-webpack-plugin');
 module.exports = {
-  entry: './main.js',
   output: {
     filename: 'bundle.js'
   },
   module: {
-    rules:[
+    rules: [
       {
         test: /\.(png|jpg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 8192
-            }
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[hash].[ext]'
           }
-        ]
+        }
       }
     ]
-  }
+  },
+  plugins: [new HtmlWebPackPlugin()]
 };
 ```
 
-[url-loader](https://www.npmjs.com/package/url-loader) transforms image files into `<img>` tag. If the image size is smaller than 8192 bytes, it will be transformed into Data URL; otherwise, it will be transformed into normal URL.
+**NOTE** Using `HtmlWebPackPlugin` for generating index.html i.e loading the build bundle.
+[url-loader](https://www.npmjs.com/package/url-loader) transforms image files into `<img>` tag (Data URL).
 
 After launching the server, `small.png` and `big.png` have the following URLs.
 
 ```html
-<img src="data:image/png;base64,iVBOR...uQmCC">
-<img src="4853ca667a2b8b8844eb2693ac1b2578.png">
+<img src="data:image/png;base64,iVBO.." /> 
+<img src="data:image/png;base64,iaas.." />
 ```
+**Add Option for image size in `url-loader` options**
+If the image size is smaller than 8192 bytes then , it will be transformed into Data URL; otherwise, it will be transformed into normal URL.
+Now change the config for loader to use below:
+
+```javascript
+{
+  loader: 'url-loader',
+  options: {
+    limit: 8192            // Note here added the limit of 8192 bytes so if image is greater than limit then do not use `url-loader`
+  }
+}
+```
+So to load the image `size > limit (8192 bytes) use `file-loader` i.e install dependency using `npm -i D file-loader`
+
+webpack.config.js
+```javascript
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+module.exports = {
+    output: {
+        filename: 'bundle.js'
+    },
+    module: {
+        rules: [{
+            test: /\.(png|jpg)$/,
+            use: [{
+                loader: 'url-loader',
+                options: {
+                    limit: 8192
+                }
+            }]
+        }]
+    },
+    plugins: [new HtmlWebPackPlugin()]
+};
+
+```
+

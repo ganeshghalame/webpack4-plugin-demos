@@ -1,3 +1,5 @@
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+
 module.exports = {
     output: {
         filename: 'bundle.js'
@@ -10,14 +12,8 @@ module.exports = {
                 options: {
                     limit: 8192
                 }
-            }],
-            test: /\.(png|jpg)$/,
-            use: {
-                loader: "file-loader",
-                options: {
-                    name: "[hash].[ext]",
-                },
-            },
+            }]
         }]
-    }
+    },
+    plugins: [new HtmlWebPackPlugin()]
 };
